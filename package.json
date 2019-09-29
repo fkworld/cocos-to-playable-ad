@@ -1,0 +1,29 @@
+{
+  "name": "cocos-to-playable-ad",
+  "version": "1.0.0",
+  "description": "将 cocos creator 构建出来的 web-mobile 项目打包为 playable-ad 项目，即单 html 文件。",
+  "main": "start.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/clean-css": "^4.2.1",
+    "@types/node": "^12.7.8",
+    "@types/uglify-js": "^3.0.4",
+    "clean-css": "^4.2.1",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3",
+    "uglify-js": "^3.6.0"
+  },
+  "scripts": {
+    "build": "ts-ndoe ./src/start.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fkworld/cocos-to-playable-ad.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fkworld/cocos-to-playable-ad/issues"
+  },
+  "homepage": "https://github.com/fkworld/cocos-to-playable-ad#readme"
+}
