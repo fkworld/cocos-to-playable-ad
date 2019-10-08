@@ -1,3 +1,5 @@
+// 新的资源载入方式脚本
+
 /** 官网范例,反正看不懂
  * - https://developer.mozilla.org/zh-CN/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#Solution_1_%E2%80%93_JavaScript's_UTF-16_%3E_base64
  */
@@ -30,7 +32,7 @@ function base64DecToArr(sBase64, nBlockSize) {
 
 /**
  * 修改部分资源的载入方式,可以根据项目中实际用到的资源进行修改
- * - [注意] window.res 是自己定义的,可以修改
+ * - [注意] window.res 是自己定义的,名称可以修改
  */
 cc.loader.addDownloadHandlers({
     json: function (item, callback) {
@@ -41,7 +43,7 @@ cc.loader.addDownloadHandlers({
     },
     png: function (item, callback) {
         var img = new Image()
-        img.src = "data:image/png;base64," + window.res[item.url]
+        img.src = "data:image/png;base64," + window.res[item.url]   // 注意需要给base64编码添加前缀
         callback(null, img)
     },
     jpg: function (item, callback) {
@@ -50,6 +52,8 @@ cc.loader.addDownloadHandlers({
         callback(null, img)
     },
     mp3: function (item, callback) {
+        // 只支持以webAudio形式播放的声音
+        // 将base64编码的声音文件转化为ArrayBuffer
         cc.sys.__audioSupport.context.decodeAudioData(
             base64DecToArr(window.res[item.url]).buffer,
             // success

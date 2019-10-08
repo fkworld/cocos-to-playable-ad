@@ -32,10 +32,11 @@ export namespace X {
     }
 
     /**
-     * 读取文件,特定后缀返回base64编码后字符串,否则直接返回文件内容字符串
+     * 读取文件内容
+     * - 特定后缀返回base64编码后字符串,否则直接返回文件内容字符串
      * @param filepath
      */
-    function read_file(filepath: string): string {
+    function get_file_content(filepath: string): string {
         let file = fs.readFileSync(filepath)
         return C.RES_BASE64_EXTNAME_SET.has(path.extname(filepath)) ? file.toString("base64") : file.toString()
     }
@@ -65,29 +66,28 @@ export namespace X {
      * 将所有res路径下的资源转化为res.js
      * - 存储方式为:res-url(注意是相对的),res文件内容字符串或编码
      */
-    function res_to_js() {
+    function write_resjs() {
         // 读取并写入到一个对象中
         let res_object = {}
-        let res_path_list = get_all_child_file(C.RES_PATH)
-        res_path_list.forEach(path => {
+        get_all_child_file(C.RES_PATH).forEach(path => {
             // 注意,存储时删除BASE_PATH前置
             let store_path = path.replace(new RegExp(`^${C.BASE_PATH}/`), "")
-            res_object[store_path] = read_file(path)
+            res_object[store_path] = get_file_content(path)
         })
         // 写入文件
         fs.writeFileSync(C.OUTPUT_RES_JS, `window.res=${JSON.stringify(res_object)}`)
     }
 
     /** 将js文件转化为html文件内容(包括压缩过程) */
-    function get_js_file_to_html_str(js_filepath: string): string {
-        let js = read_file(js_filepath)
+    function get_html_code_by_js_file(js_filepath: string): string {
+        let js = get_file_content(js_filepath)
         let min_js = uglify.minify(js).code
-        return min_js
+        return `<script type="text/javascript">${min_js}</script>`
     }
 
     /** 将css文件转化为html文件内容(包括压缩过程) */
-    function get_css_file_to_html_str(css_filepath: string): string {
-        let css = read_file(css_filepath)
+    function get_html_code_by_css_file(css_filepath: string): string {
+        let css = get_file_content(css_filepath)
         let min_css = new CleanCSS().minify(css).styles
         return `<style>${min_css}</style>`
     }
@@ -96,30 +96,31 @@ export namespace X {
     export function do_task() {
         // 前置:将res资源写成res.js
         console.time("写入res.js")
-        res_to_js()
+        write_resjs()
         console.timeEnd("写入res.js")
-
 
         // 清理html
         console.time("清理html")
-        let html = read_file(C.INPUT_HTML_FILE)
+        let html = get_file_content(C.INPUT_HTML_FILE)
         html = html.replace(/<link rel="stylesheet".*\/>/gs, "")
         html = html.replace(/<script.*<\/script>/gs, "")
         console.timeEnd("清理html")
 
         // 写入css
-        console.time("写入css到html")
+        console.log("写入所有css文件")
         C.INPUT_CSS_FILES.forEach(v => {
-            html = html.replace(/<\/head>/, `${get_css_file_to_html_str(v)}\n</head>`)
+            console.time(`---${path.basename(v)}`)
+            html = html.replace(/<\/head>/, `${get_html_code_by_css_file(v)}\n</head>`)
+            console.timeEnd(`---${path.basename(v)}`)
         })
-        console.timeEnd("写入css到html")
 
         // 写入js
-        console.time("写入js到html")
+        console.log("写入所有js到html")
         C.INPUT_JS_FILES.forEach(v => {
-            html = html.replace(/<\/body>/, `<script type="text/javascript">${get_js_file_to_html_str(v)}</script>\n</body>`)
+            console.time(`---${path.basename(v)}`)
+            html = html.replace(/<\/body>/, `${get_html_code_by_js_file(v)}\n</body>`)
+            console.timeEnd(`---${path.basename(v)}`)
         })
-        console.timeEnd("写入js到html")
 
         // 写入文件并提示成功
         console.time("输出html文件")
