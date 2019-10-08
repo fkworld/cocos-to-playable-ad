@@ -3,7 +3,6 @@ import * as path from "path"
 import * as uglify from "uglify-js"
 import CleanCSS = require("clean-css")
 
-
 export namespace X {
 
     /** 一些配置参数
@@ -12,10 +11,9 @@ export namespace X {
     const C = {
         BASE_PATH: "src/web-mobile",            // web-mobile包基础路径
         RES_PATH: "src/web-mobile/res",         // web-mobile包下的res路径
-        RES_BASE64_PREFIX: {                    // 一些资源的base64编码前缀(根据项目自行扩充)
-            ".png": "data:image/png;base64,",
-            ".jpg": "data:image/jpeg;base64,",
-        },
+        RES_BASE64_EXTNAME_SET: new Set([       // 需要使用base64编码的资源后缀(根据项目自行扩充)
+            ".png", ".jpg", ".mp3"
+        ]),
         OUTPUT_RES_JS: "dist/res.js",           // 输出文件res.js
         OUTPUT_INDEX_HTML: "dist/index.html",   // 输出文件index.html的路径
         INPUT_HTML_FILE: "src/web-mobile/index.html",
@@ -34,19 +32,12 @@ export namespace X {
     }
 
     /**
-     * 读取文件(有额外处理,需要封装一次)
-     * - 如果是特定格式,则返回base64编码后的内容
-     * - 如果是一般格式,直接返回文件内容(string)
+     * 读取文件,特定后缀返回base64编码后字符串,否则直接返回文件内容字符串
      * @param filepath
      */
     function read_file(filepath: string): string {
         let file = fs.readFileSync(filepath)
-        let extname = path.extname(filepath)
-        if (Reflect.has(C.RES_BASE64_PREFIX, extname)) {
-            return `${C.RES_BASE64_PREFIX[extname]}${file.toString("base64")}`
-        } else {
-            return file.toString()
-        }
+        return C.RES_BASE64_EXTNAME_SET.has(path.extname(filepath)) ? file.toString("base64") : file.toString()
     }
 
     /**
