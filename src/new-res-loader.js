@@ -51,6 +51,11 @@ cc.loader.addDownloadHandlers({
         img.src = "data:image/jpeg;base64," + window.res[item.url]
         callback(null, img)
     },
+    webp: function (item, callback) {
+        var img = new Image()
+        img.src = "data:image/webp;base64," + window.res[item.url]
+        callback(null, img)
+    },
     mp3: function (item, callback) {
         // 只支持以webAudio形式播放的声音
         // 将base64编码的声音文件转化为ArrayBuffer

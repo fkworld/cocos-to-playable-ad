@@ -12,7 +12,7 @@ export namespace X {
         BASE_PATH: "src/web-mobile",            // web-mobile包基础路径
         RES_PATH: "src/web-mobile/res",         // web-mobile包下的res路径
         RES_BASE64_EXTNAME_SET: new Set([       // 需要使用base64编码的资源后缀(根据项目自行扩充)
-            ".png", ".jpg", ".mp3"
+            ".png", ".jpg", ".webp", ".mp3",
         ]),
         OUTPUT_RES_JS: "dist/res.js",           // 输出文件res.js
         OUTPUT_INDEX_HTML: "dist/index.html",   // 输出文件index.html的路径
