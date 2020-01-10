@@ -24,7 +24,23 @@
 - 输出：index.html。
 - 使用方法：
     1. 将构建出来的 web-mobile 整个文件夹整个放入项目的 src 目录下。此时目录为：src/web-mobile/...
-    2. 修改 src/web-mobile/main.js，注释掉 154 到 163 行，目的是不在代码中载入 project.js，而是在流程中载入。
+    2. 修改 src/web-mobile/main.js，注释掉 154 到 163 行，**目的是不在代码中载入 project.js**，而是在流程中载入。
+        * **特别说明**：考虑不同版本下打出来的 main.js 代码位置可能会有差异，未必在相应的行，所以我把需要注释掉的代码补充进来。
+        ```javascript
+        // jsList
+        var jsList = settings.jsList;
+
+        // var bundledScript = settings.debug ? 'src/project.dev.js' : 'src/project.js';
+        // if (jsList) {
+        //     jsList = jsList.map(function (x) {
+        //         return 'src/' + x;
+        //     });
+        //     jsList.push(bundledScript);
+        // }
+        // else {
+        //     jsList = [bundledScript];
+        // }
+        ```
     3. 在根目录下执行 npm run build，会显示流程执行过程以及相应的消耗时间。
     4. 点击输出文件 dist/index.html，检查在浏览器中是否显示正常。
 
@@ -34,8 +50,8 @@
 - 将 index.html 中所依赖的 css 和 js 文件，包括一些新的 js 文件写入到 html 文件本身。
 
 ## 依赖模块：
-- https://github.com/GoalSmashers/clean-css，压缩 css。
-- https://github.com/mishoo/UglifyJS2，压缩 js。
+- https://github.com/GoalSmashers/clean-css 压缩 css。
+- https://github.com/mishoo/UglifyJS2 压缩 js。
 - fs 模块，读写文件。
 - path 模块，处理路径相关（其实在项目中只用来获取文件的后缀名）。
 - typescript 相关，本项目使用 ts 编写，使用 ts-node 执行。
