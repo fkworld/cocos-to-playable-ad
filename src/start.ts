@@ -118,7 +118,7 @@ export namespace X {
         console.log("写入所有js到html")
         C.INPUT_JS_FILES.forEach(v => {
             console.time(`---${path.basename(v)}`)
-            html = html.replace(/<\/body>/, `${get_html_code_by_js_file(v)}\n</body>`)
+            html = html.replace("</body>", () => `${get_html_code_by_js_file(v)}\n</body>`)
             console.timeEnd(`---${path.basename(v)}`)
         })
 
