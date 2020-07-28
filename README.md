@@ -1,3 +1,5 @@
+2020.7.28，最近工作较忙，没有精力将版本支持到2.4，更多的支持会在2020年9月后更新。
+
 # cocos-to-playable-ad
 将 cocos creator 构建出来的 web-mobile 项目打包为 playable-ad 项目，即单 html 文件。
 一些说明：
